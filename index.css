@@ -1,0 +1,18 @@
+main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.field{
+    display: grid;
+    grid-template-columns: repeat(16, 30px);
+    grid-template-rows: repeat(16, 30px);
+    border: 3px solid gray;
+}
+button{
+    height: 30px;
+}
+.opened{
+    background-color: #fff;
+    border: none;
+}
