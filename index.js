@@ -2,6 +2,9 @@ document.body.addEventListener("contextmenu", (e) => {e.preventDefault(); return
     const fMn = document.querySelector('.f-mn');
     const sMn = document.querySelector('.s-mn');
     const tMn = document.querySelector('.t-mn');
+    const sTm = document.querySelector('.s-tm');
+    const tTm = document.querySelector('.t-tm');
+    const fTm = document.querySelector('.f-tm');
     const timer = document.querySelector('.timer');
     const reset = document.querySelector('.reset');
     const field = document.querySelector('.field');
@@ -131,20 +134,17 @@ function start(w, h, minesCount) {
                 minesLeft = minesLeft > 0 ? minesLeft - 1 : 0;
                 updMinesCount(minesLeft);
             }
-            return
         }
-        if(cell.className === 'flag'){
+        else if(cell.className === 'flag'){
             console.log('click flag');
             cell.className = 'question';
             minesLeft = minesLeft < minesCount ? minesLeft + 1 : minesLeft;
             updMinesCount(minesLeft);
-            return
         }
-        if(cell.className === 'question'){
+        else if(cell.className === 'question'){
             console.log('click question');
             cell.className = 'cell-cl';
-            return
-        }
+        } else return
 
         // switch(cell.className) {
         //     case 'cell-cl':
@@ -168,8 +168,31 @@ function start(w, h, minesCount) {
         //     default: break
         // }
     }
+    let s = 0;
+
+    const updTimer = (sec) => {
+        let hun = Math.trunc(sec / 100);
+        let dec = Math.trunc(sec / 10);
+        let nat = sec % 10
+
+        fTm.className = timerClass[hun]
+        sTm.className = timerClass[dec]
+        tTm.className = timerClass[nat]
+    }
+
+    const initTimer = () => {
+        if(s < 999){
+            s+=1
+            console.log(s)
+        }
+        updTimer(s)
+    }
+    const timerId = setInterval(initTimer, 1000);
+
 
     field.addEventListener('mousedown', (e) => {
+        e.preventDefault()
+        e.stopPropagation()
         console.log('click field');
         switch(e.button){
             case 0:
@@ -191,7 +214,6 @@ function start(w, h, minesCount) {
                 rightBtnClick(e);
                 break;
         }
-
     });
 
     field.addEventListener('mouseup', (e) => {
@@ -208,13 +230,16 @@ function start(w, h, minesCount) {
 
     })
     reset.addEventListener('mousedown', (e) => {
+        e.preventDefault()
         e.target.classList.add('fine-cl')
     })
     reset.addEventListener('mouseup', (e) => {
         e.target.classList.add('fine')
         e.target.classList.remove('fine-cl')
+        // location.reload()
+        start(16,16,5)
     })
 
 }
-    reset.addEventListener('mousedown', () => start(16,16,5))
+    // reset.addEventListener('mousedown', () => start(16,16,5))
 

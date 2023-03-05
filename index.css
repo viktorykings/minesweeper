@@ -57,6 +57,12 @@ header{
     background-image: url(./minesweeper-sprites_9TPZzv3.png);
     background-size: 1000% 350%;
 }
+.timer div{
+    width: 27px;
+    height: 100%;
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-size: 1000% 350%;
+}
 .cell-cl{
     background-image: url(./minesweeper-sprites_9TPZzv3.png);
     background-position: 0 59px;
