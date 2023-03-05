@@ -1,4 +1,6 @@
 document.body.addEventListener("contextmenu", (e) => {e.preventDefault(); return false;});
+
+    // const field = document.querySelector('.field');
     const fMn = document.querySelector('.f-mn');
     const sMn = document.querySelector('.s-mn');
     const tMn = document.querySelector('.t-mn');
@@ -7,16 +9,22 @@ document.body.addEventListener("contextmenu", (e) => {e.preventDefault(); return
     const fTm = document.querySelector('.f-tm');
     const timer = document.querySelector('.timer');
     const reset = document.querySelector('.reset');
-    const field = document.querySelector('.field');
+    const main = document.querySelector('.main')
+    const field = document.querySelector('#field')
+    // const field = document.createElement('div')
 
 
-    document.addEventListener("DOMContentLoaded", () => start(16,16,5))
+
+    document.addEventListener("DOMContentLoaded", start(16, 16, 40))
 // start(16,16,5)
 function start(w, h, minesCount) {
+    // field.classList.add('field')
+    // main.append(field)
     console.log('newgame')
     let isGameStarted = false;
     let loose = false;
     let win = false;
+    let s = 0
     const numClass = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
     const timerClass = ['t-zero', 't-one', 't-two', 't-three', 't-four', 't-five', 't-six', 't-seven', 't-eight', 't-nine']
 
@@ -25,6 +33,24 @@ function start(w, h, minesCount) {
     const cells = [...field.children];
     let mines = []
     let minesLeft = minesCount;
+
+    const updTimer = (sec) => {
+        let hun = Math.trunc(sec / 100);
+        let dec = Math.trunc(sec / 10);
+        let nat = sec % 10
+
+        fTm.className = timerClass[hun]
+        sTm.className = timerClass[dec]
+        tTm.className = timerClass[nat]
+    }
+    s = 0
+    const initTimer = () => {
+        if(s < 999){
+            s+=1
+        }
+        updTimer(s)
+    }
+    const timerId = setInterval(initTimer, 1000);
 
     updMinesCount(minesLeft);
 
@@ -110,6 +136,8 @@ function start(w, h, minesCount) {
     // console.log(showMinesCount(minesLeft()))
     const leftBtnClick = (e) => {
         const ind = cells.indexOf(e.target)
+        console.log(ind);
+
         if(isGameStarted === false) {
             mines = fillWithMines(ind)
             isGameStarted = true;
@@ -168,45 +196,25 @@ function start(w, h, minesCount) {
         //     default: break
         // }
     }
-    let s = 0;
-
-    const updTimer = (sec) => {
-        let hun = Math.trunc(sec / 100);
-        let dec = Math.trunc(sec / 10);
-        let nat = sec % 10
-
-        fTm.className = timerClass[hun]
-        sTm.className = timerClass[dec]
-        tTm.className = timerClass[nat]
-    }
-
-    const initTimer = () => {
-        if(s < 999){
-            s+=1
-            console.log(s)
-        }
-        updTimer(s)
-    }
-    const timerId = setInterval(initTimer, 1000);
-
 
     field.addEventListener('mousedown', (e) => {
-        e.preventDefault()
-        e.stopPropagation()
         console.log('click field');
         switch(e.button){
             case 0:
                 if(e.target.className === 'cell-cl'){
+                    console.log('leftclick');
                     leftBtnClick(e);
                     reset.classList.remove('fine')
                     reset.classList.add('scared')
-                    const closed = cells.filter(el => el.className === 'cell-cl')
+                    const closed = cells.filter(el => el.className === 'cell-cl' || el.className === 'flag')
+                    console.log(closed);
                     if(closed.length === minesCount) {
                         win = true;
                         console.log(win)
                         closed.forEach(el => el.className = 'flag')
                         minesLeft = 0
                         updMinesCount(minesLeft)
+                        clearInterval(timerId)
                     }
                 }
                 break;
@@ -219,6 +227,8 @@ function start(w, h, minesCount) {
     field.addEventListener('mouseup', (e) => {
         reset.classList.add('fine')
         reset.classList.remove('scared')
+        reset.classList.remove('win')
+        reset.classList.remove('loose')
         if(loose){
             reset.classList.remove('fine');
             reset.classList.add('loose')
@@ -236,8 +246,18 @@ function start(w, h, minesCount) {
     reset.addEventListener('mouseup', (e) => {
         e.target.classList.add('fine')
         e.target.classList.remove('fine-cl')
-        // location.reload()
-        start(16,16,5)
+        e.target.classList.remove('win')
+        clearInterval(timerId);
+        cells.forEach(el => el.className = 'cell-cl')
+        s = 0
+        updTimer(s)
+        mines = []
+        isGameStarted = false
+        win = false
+        loose = false
+        minesLeft = minesCount
+        updMinesCount(minesLeft)
+        // start(16,16,5)
     })
 
 }
