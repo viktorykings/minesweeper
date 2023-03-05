@@ -1,151 +1,220 @@
-start()
-function start() {
-    const minesCount = 40;
-    const w = h = 16;
-    const cellsCount = w * h;
+document.body.addEventListener("contextmenu", (e) => {e.preventDefault(); return false;});
+    const fMn = document.querySelector('.f-mn');
+    const sMn = document.querySelector('.s-mn');
+    const tMn = document.querySelector('.t-mn');
+    const timer = document.querySelector('.timer');
+    const reset = document.querySelector('.reset');
     const field = document.querySelector('.field');
-    field.innerHTML = '<button></button>'.repeat(cellsCount);
-    const cells = [...field.children];
 
-    const mines = [...Array(cellsCount).keys()].sort(() => Math.random() - 0.5).slice(0, minesCount);
-    console.log(mines)
-    cells.forEach((el, i) => el.innerHTML = i);
+
+    document.addEventListener("DOMContentLoaded", () => start(16,16,5))
+// start(16,16,5)
+function start(w, h, minesCount) {
+    console.log('newgame')
+    let isGameStarted = false;
+    let loose = false;
+    let win = false;
+    const numClass = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight'];
+    const timerClass = ['t-zero', 't-one', 't-two', 't-three', 't-four', 't-five', 't-six', 't-seven', 't-eight', 't-nine']
+
+    const cellsCount = w * h;
+    field.innerHTML = "<button class='cell-cl'></button>".repeat(cellsCount);
+    const cells = [...field.children];
+    let mines = []
+    let minesLeft = minesCount;
+
+    updMinesCount(minesLeft);
+
+
+    const fillWithMines = (ind) => {
+        const mines = [...Array(cellsCount).keys()].filter(el => el !== ind).sort(() => Math.random() - 0.5).slice(0, minesCount);
+        return mines;
+    }
+
     const findIndex = (col, row) => row * w + col;
 
     const checkMine = (col, row) => {
-        const ind = findIndex(col, row);
-        return mines.includes(ind);
+        if (checkValid(col, row)){
+            const ind = findIndex(col, row);
+            return mines.includes(ind);
+        }
+        return false;
     };
 
-    const findAdjacents = (col, row) => {
-        const adjs = [];
-        const isMore = (num) => {
-            return num >= 0;
+    const getMinesCount = (col, row) => {
+        let count = 0;
+        for (let i = -1; i < 2; i++) {
+            for (let j = -1; j < 2; j++){
+                if (checkMine(col + i, row + j)) {
+                    count++;
+                }
+            }
         }
-        const isLess = (num) => {
-            return num <= 255;
-        }
-        function IndColRight(ind){
-            return findIndex(col + 1, row + ind)
-        }
-        function IndColLeft(ind){
-            return findIndex(col - 1, row + ind)
+        return count;
+    };
+    const checkValid = (col, row) => {
+        return col >= 0 && row >= 0 && col < h && row < w;
+    }
+    const openCell = (col, row) => {
+        if (!checkValid(col, row)) return;
+
+        const ind = findIndex(col, row);
+        const cell = cells[ind];
+
+        if(cell.classList.contains('cell-op')) return;
+
+        if (checkMine(col, row)) {
+            mines.forEach((el) => cells[el].className = 'bomb')
+            cells.filter((el) => el.className === 'flag').forEach(el => el.className = 'bomb-crossed')
+            // cells.filter((el) => el.className === 'cell-cl').forEach(el => el.disabled = true)
+            cell.className = 'bomb-red';
+            loose = true;
+            return;
         }
 
-        const indRowUp = findIndex(col, row - 1);
-        const indRowDown = findIndex(col, row + 1);
-        if (col === 0 && row === 0) {
-            adjs.push(indRowDown)
-            for(let i = 0; i < 2; i++){
-                let indRight = IndColRight(i);
-                adjs.push(indRight);
-            }
+        const count = getMinesCount(col, row);
+        if(cell.classList.contains('flag')) minesLeft++;
+        updMinesCount(minesLeft);
+        if (count !== 0){
+            cell.className = numClass[count]
+            return;
         }
-        else if (col === 0 && row === 15) {
-            adjs.push(indRowUp)
-            for(let i = -1; i < 1; i++){
-                let indRight = IndColRight(i);
-                adjs.push(indRight);
-            }
-        }
-        else if (col === 15 && row === 0) {
-            adjs.push(indRowDown)
-            for(let i = 0; i < 2; i++){
-                let indLeft = IndColLeft(i);
-                adjs.push(indLeft);
-            }
-        }
-        else if (col === 15 && row === 15) {
-            adjs.push(indRowDown)
-            for(let i = -1; i < 1; i++){
-                let indLeft = IndColLeft(i);
-                adjs.push(indLeft);
-            }
-        }
-        else if (col === 0) {
-            if (isMore(indRowUp)){
-                adjs.push(indRowUp);
-            }
-            if (isLess(indRowDown)) {
-                adjs.push(indRowDown);
-            }
-            for(let i = -1; i < 2; i++){
-                let indRight = IndColRight(i);
-                if (isMore(indRight) && isLess(indRight)){
-                    adjs.push(indRight);
-                }
-            }
-        }
-        else if (col === 15) {
-            if (isMore(indRowUp)){
-                adjs.push(indRowUp);
-            }
-            if (isLess(indRowDown)){
-                adjs.push(indRowDown);
-            }
-            for(let i = -1; i < 2; i++){
-                let indLeft = IndColLeft(i);
-                if (isMore(indLeft) && isLess(indLeft)){
-                    adjs.push(indLeft);
-                }
+
+        cell.className = 'cell-op'
+        cell.innerHTML = '';
+
+        for (let i = -1; i < 2; i++){
+            for (let j = -1; j < 2; j++){
+                openCell(col + j, row + i);
             }
         }
 
-        else if (row === 0) {
-            adjs.push(indRowDown);
-            for(let i = -1; i < 2; i++){
-                let indRight = IndColRight(i);
-                let indLeft = IndColLeft(i)
-                if (isMore(indRight)){
-                    adjs.push(indRight);
-                }
-                if (isMore(indLeft)){
-                    adjs.push(indLeft);
-                }
-            }
-        }
-        else if (row === 15) {
-            adjs.push(indRowUp);
-            for(let i = -1; i < 2; i++){
-                let indRight = IndColRight(i);
-                let indLeft = IndColLeft(i)
-                if (isLess(indRight)){
-                    adjs.push(indRight);
-                }
-                if (isLess(indLeft)){
-                    adjs.push(indLeft);
-                }
-            }
-        } else {
-            adjs.push(indRowUp, indRowDown)
-            for(let i = -1; i < 2; i++){
-                let indRight = IndColRight(i);
-                let indLeft = IndColLeft(i)
-                adjs.push(indLeft, indRight)
-            }
-        }
-
-        console.log(adjs);
     }
 
-    field.addEventListener('click', (e) => {
-        // if(e.target !== button) {
-        //     return;
-        // }
+
+    function updMinesCount(count) {
+        let hun = Math.trunc(count / 100);
+        let dec = Math.trunc(count / 10);
+        let nat = count % 10;
+
+        fMn.className = timerClass[hun]
+        sMn.className = timerClass[dec]
+        tMn.className = timerClass[nat]
+        // fMn.classList.add(timerClass[hun])
+        // sMn.classList.add(timerClass[dec])
+        // tMn.classList.add(timerClass[nat])
+    }
+    // console.log(showMinesCount(minesLeft()))
+    const leftBtnClick = (e) => {
         const ind = cells.indexOf(e.target)
-        console.log(ind, 'ind');
+        if(isGameStarted === false) {
+            mines = fillWithMines(ind)
+            isGameStarted = true;
+        }
+        if(e.target.tagName !== "BUTTON") {
+            return;
+        }
         const col = ind % w;
         const row = Math.floor(ind / w);
+        console.log(ind, 'ind');
         console.log(col, 'col');
         console.log(row, 'row');
-        if (checkMine(col, row)) {
-            e.target.innerHTML = 'x'
-        } else {
-            console.log(e.target)
-            e.target.classList.add('opened');
-            const empAdjs = findAdjacents(col, row);
-            // empAdjs.forEach(el => el.classList.add('opened'));
+        openCell(col, row)
+    }
+    const rightBtnClick = (e) => {
+        const cell = e.target;
+        console.log(cell.className)
+        if(cell.className === 'cell-cl'){
+            console.log('click empty');
+            if(minesLeft > 0){
+                cell.className = 'flag';
+                minesLeft = minesLeft > 0 ? minesLeft - 1 : 0;
+                updMinesCount(minesLeft);
+            }
+            return
         }
+        if(cell.className === 'flag'){
+            console.log('click flag');
+            cell.className = 'question';
+            minesLeft = minesLeft < minesCount ? minesLeft + 1 : minesLeft;
+            updMinesCount(minesLeft);
+            return
+        }
+        if(cell.className === 'question'){
+            console.log('click question');
+            cell.className = 'cell-cl';
+            return
+        }
+
+        // switch(cell.className) {
+        //     case 'cell-cl':
+        //         if(minesLeft > 0){
+        //             cell.className = 'flag';
+        //             minesLeft = minesLeft > 0 ? minesLeft - 1 : 0;
+        //             updMinesCount(minesLeft);
+
+        //         }
+        //         break;
+        //                         //check if win
+        //     case 'flag':
+        //             cell.className = 'question';
+        //             minesLeft = minesLeft < minesCount ? minesLeft + 1 : minesLeft;
+        //         updMinesCount(minesLeft);
+
+        //         break;
+        //     case 'question':
+        //         cell.className = 'cell-cl';
+        //         break;
+        //     default: break
+        // }
+    }
+
+    field.addEventListener('mousedown', (e) => {
+        console.log('click field');
+        switch(e.button){
+            case 0:
+                if(e.target.className === 'cell-cl'){
+                    leftBtnClick(e);
+                    reset.classList.remove('fine')
+                    reset.classList.add('scared')
+                    const closed = cells.filter(el => el.className === 'cell-cl')
+                    if(closed.length === minesCount) {
+                        win = true;
+                        console.log(win)
+                        closed.forEach(el => el.className = 'flag')
+                        minesLeft = 0
+                        updMinesCount(minesLeft)
+                    }
+                }
+                break;
+            case 2:
+                rightBtnClick(e);
+                break;
+        }
+
     });
 
+    field.addEventListener('mouseup', (e) => {
+        reset.classList.add('fine')
+        reset.classList.remove('scared')
+        if(loose){
+            reset.classList.remove('fine');
+            reset.classList.add('loose')
+        }
+        if(win){
+            reset.classList.remove('fine');
+            reset.classList.add('win');
+        }
+
+    })
+    reset.addEventListener('mousedown', (e) => {
+        e.target.classList.add('fine-cl')
+    })
+    reset.addEventListener('mouseup', (e) => {
+        e.target.classList.add('fine')
+        e.target.classList.remove('fine-cl')
+    })
+
 }
+    reset.addEventListener('mousedown', () => start(16,16,5))
+

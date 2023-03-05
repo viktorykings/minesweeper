@@ -1,5 +1,6 @@
 main{
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
@@ -11,8 +12,173 @@ main{
 }
 button{
     height: 30px;
+    border: none;
 }
 .opened{
     background-color: #fff;
     border: none;
+}
+header{
+    height: 50px;
+    width: 480px;
+    border: 3px solid gray;
+    background-color: rgb(194, 194, 194);
+    display: flex;
+    justify-content: space-around;
+}
+.timer,
+.mines{
+    width: 80px;
+    height: 100%;
+    display: flex;
+
+}
+.reset{
+    width: 50px;
+    height: 100%;
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: 0 -100%;
+    background-size: 540% 340%;
+}
+.f-mn,
+.s-mn,
+.t-mn,
+.f-tm,
+.s-tm,
+.t-tm{
+    width: 27px;
+    height: 100%;
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-size: 1000% 350%;
+}
+.mines div{
+    width: 27px;
+    height: 100%;
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-size: 1000% 350%;
+}
+.cell-cl{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: 0 59px;
+    background-size: 247px 148px;
+}
+.cell-op{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -30px 59px;
+    background-size: 247px 148px;
+}
+.flag{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -60px 59px;
+    background-size: 247px 148px;
+}
+.question{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -90px 59px;
+    background-size: 247px 148px;
+}
+.question-op{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -120px 59px;
+    background-size: 247px 148px;
+}
+.bomb{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -151px 59px;
+    background-size: 247px 148px;
+}
+.bomb-red{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -180px 59px;
+    background-size: 247px 148px;
+}
+.bomb-crossed{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -212px 59px;
+    background-size: 247px 148px;
+}
+.one{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -0 30px;
+    background-size: 247px 148px;
+}
+.two{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -30px 30px;
+    background-size: 247px 148px;
+}
+.three{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -60px 30px;
+    background-size: 247px 148px;
+}
+.four{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -90px 30px;
+    background-size: 247px 148px;
+}
+.five{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -120px 30px;
+    background-size: 247px 148px;
+}
+.six{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -150px 30px;
+    background-size: 247px 148px;
+}
+.seven{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -180px 30px;
+    background-size: 247px 148px;
+}
+.eight{
+    background-image: url(./minesweeper-sprites_9TPZzv3.png);
+    background-position: -210px 30px;
+    background-size: 247px 148px;
+}
+.t-zero{
+    background-position: -900% 0;
+}
+.t-one{
+    background-position: 0 0;
+}
+.t-two{
+    background-position: -100% 0;
+}
+.t-three{
+    background-position: -200% 0;
+}
+.t-four{
+    background-position: -300% 0;
+}
+.t-five{
+    background-position: -400% 0;
+}
+.t-six{
+    background-position: -500% 0;
+}
+.t-seven{
+    background-position: -600% 0;
+}
+.t-eight{
+    background-position: -700% 0;
+}
+.t-nine{
+    background-position: -800% 0;
+}
+.loose{
+    background-position: 96% -100%;
+}
+.win{
+    background-position: 72% -100%;
+}
+.fine{
+    background-position: 0% -100%;
+}
+.fine-cl{
+    background-position: 24% -100%;
+}
+.scared{
+    background-position: 48% -100%;
 }
