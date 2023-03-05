@@ -21,7 +21,6 @@ function start(w, h, minesCount) {
     const cells = [...field.children];
     let mines = [];
     let minesLeft = minesCount;
-    console.log(win, loose);
 
     updMinesCount(minesLeft);
 
@@ -119,7 +118,6 @@ function start(w, h, minesCount) {
 
     const leftBtnClick = (e) => {
         const ind = cells.indexOf(e.target)
-        console.log(ind);
 
         if(isGameStarted === false) {
             mines = fillWithMines(ind);
@@ -158,7 +156,6 @@ function start(w, h, minesCount) {
 
     const winGame = () => {
         win = true;
-        console.log(win);
         closed.forEach(el => el.className = 'flag');
         minesLeft = 0;
         updMinesCount(minesLeft);
@@ -201,7 +198,6 @@ function start(w, h, minesCount) {
             switch(e.button){
                 case 0:
                     if(e.target.className === 'cell-cl'){
-                        console.log('leftclick');
                         leftBtnClick(e);
                         removeClass(reset);
                         reset.classList.add('scared');
